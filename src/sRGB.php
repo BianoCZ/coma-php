@@ -77,7 +77,7 @@ class sRGB
 
     /**
      * The reverse transformation (sRGB to CIE XYZ)
-     * https://en.wikipedia.org/wiki/SRGB.
+     * @link https://en.wikipedia.org/wiki/SRGB.
      */
     public function toXyz(): XYZ
     {

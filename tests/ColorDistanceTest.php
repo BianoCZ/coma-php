@@ -46,14 +46,23 @@ class ColorDistanceTest extends TestCase
         self::assertEqualsWithDelta(6.840347, $cie94, 0.0001);
     }
 
+    public function testCiede2000(): void
+    {
+        $ciede2000 = $this->colorDistance->ciede2000($this->colors[0], $this->colors[1]);
+
+        self::assertEqualsWithDelta(5.486647, $ciede2000, 0.0001);
+    }
+
     public function testMaxDistance(): void
     {
         $cie94 = $this->colorDistance->cie94($this->colors[2], $this->colors[3]);
         $cie76 = $this->colorDistance->cie76($this->colors[2], $this->colors[3]);
+        $ciede2000 = $this->colorDistance->ciede2000($this->colors[2], $this->colors[3]);
         $simple = $this->colorDistance->simpleRgbDistance($this->colors[2], $this->colors[3]);
 
         self::assertEqualsWithDelta(100.0, $cie76, 0.0001);
         self::assertEqualsWithDelta(100.0, $cie94, 0.0001);
+        self::assertEqualsWithDelta(100.0, $ciede2000, 0.0001);
         self::assertEqualsWithDelta(100.0, $simple, 0.0001);
     }
 
@@ -61,10 +70,12 @@ class ColorDistanceTest extends TestCase
     {
         $cie94 = $this->colorDistance->cie94($this->colors[2], $this->colors[2]);
         $cie76 = $this->colorDistance->cie76($this->colors[2], $this->colors[2]);
+        $ciede2000 = $this->colorDistance->ciede2000($this->colors[2], $this->colors[2]);
         $simple = $this->colorDistance->simpleRgbDistance($this->colors[2], $this->colors[2]);
 
         self::assertEqualsWithDelta(0.0, $cie76, 0.0001);
         self::assertEqualsWithDelta(0.0, $cie94, 0.0001);
+        self::assertEqualsWithDelta(0.0, $ciede2000, 0.0001);
         self::assertEqualsWithDelta(0.0, $simple, 0.0001);
     }
 

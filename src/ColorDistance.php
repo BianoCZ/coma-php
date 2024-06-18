@@ -4,15 +4,21 @@ declare(strict_types = 1);
 
 namespace Biano\Coma;
 
+use function abs;
+use function atan2;
+use function cos;
+use function exp;
+use function pow;
+use function sin;
 use function sqrt;
 
 /**
  * References used:
- * - https://en.wikipedia.org/wiki/Color_difference
- * - https://en.wikipedia.org/wiki/Lab_color_space
- * - https://en.wikipedia.org/wiki/SRGB_color_space
- * - https://github.com/THEjoezack/ColorMine (.NET example code)
- * - https://gist.github.com/mikelikespie/641528 (JS example code).
+ * @link https://en.wikipedia.org/wiki/Color_difference
+ * @link https://en.wikipedia.org/wiki/Lab_color_space
+ * @link https://en.wikipedia.org/wiki/SRGB_color_space
+ * @link https://github.com/THEjoezack/ColorMine (.NET example code)
+ * @link https://gist.github.com/mikelikespie/641528 (JS example code).
  */
 class ColorDistance
 {
@@ -77,6 +83,86 @@ class ColorDistance
         $deltaE = $deltaLKlsl * $deltaLKlsl + $deltaCkcsc * $deltaCkcsc + $deltaHkhsh * $deltaHkhsh;
 
         return $deltaE < 0 ? 0 : sqrt($deltaE);
+    }
+
+    /**
+     * Color Distance CIEDE2000
+     *
+     * @link http://www.ece.rochester.edu/~gsharma/ciede2000/ciede2000noteCRNA.pdf
+     */
+    public function ciede2000(Lab|XYZ|sRGB $color1, Lab|XYZ|sRGB $color2): float
+    {
+        $f1 = $this->toLab($color1);
+        $f2 = $this->toLab($color2);
+
+        $l1 = $f1->l;
+        $a1 = $f1->a;
+        $b1 = $f1->b;
+        $l2 = $f2->l;
+        $a2 = $f2->a;
+        $b2 = $f2->b;
+
+        $c1 = sqrt(pow($a1, 2) + pow($b1, 2));
+        $c2 = sqrt(pow($a2, 2) + pow($b2, 2));
+        $cb = ($c1 + $c2) / 2;
+
+        $g = .5 * (1 - sqrt(pow($cb, 7) / (pow($cb, 7) + pow(25, 7))));
+
+        $a1p = (1 + $g) * $a1;
+        $a2p = (1 + $g) * $a2;
+
+        $c1p = sqrt(pow($a1p, 2) + pow($b1, 2));
+        $c2p = sqrt(pow($a2p, 2) + pow($b2, 2));
+
+        $h1p = $a1p === 0.0 && $b1 === 0.0 ? 0.0 : atan2($b1, $a1p);
+        $h2p = $a2p === 0.0 && $b2 === 0.0 ? 0.0 : atan2($b2, $a2p);
+
+        $lpDelta = $l2 - $l1;
+        $cpDelta = $c2p - $c1p;
+
+        if ($c1p * $c2p === 0.0) {
+            $hpDelta = 0;
+        } elseif (abs($h2p - $h1p) <= 180) {
+            $hpDelta = $h2p - $h1p;
+        } elseif ($h2p - $h1p > 180) {
+            $hpDelta = $h2p - $h1p - 360;
+        } else {
+            $hpDelta = $h2p - $h1p + 360;
+        }
+
+        $hp1Delta = 2 * sqrt($c1p * $c2p) * sin($hpDelta / 2);
+
+        $lbp = ($l1 + $l2) / 2;
+        $cbp = ($c1p + $c2p) / 2;
+
+        if ($c1p * $c2p === 0.0) {
+            $hbp = $h1p + $h2p;
+        } elseif (abs($h1p - $h2p) <= 180) {
+            $hbp = ($h1p + $h2p) / 2;
+        } elseif ($h1p + $h2p < 360) {
+            $hbp = ($h1p + $h2p + 360) / 2;
+        } else {
+            $hbp = ($h1p + $h2p - 360) / 2;
+        }
+
+        $t = 1 - .17 * cos($hbp - 30) + .24 * cos(2 * $hbp) + .32 * cos(3 * $hbp + 6) - .2 * cos(4 * $hbp - 63);
+
+        $sigmaDelta = 30 * exp(-pow(($hbp - 275) / 25, 2));
+
+        $rc = 2 * sqrt(pow($cbp, 7) / (pow($cbp, 7) + pow(25, 7)));
+
+        $sl = 1 + (.015 * pow($lbp - 50, 2) / sqrt(20 + pow($lbp - 50, 2)));
+        $sc = 1 + .045 * $cbp;
+        $sh = 1 + .015 * $cbp * $t;
+
+        $rt = -sin(2 * $sigmaDelta) * $rc;
+
+        return sqrt(
+            pow($lpDelta / $sl, 2) +
+            pow($cpDelta / $sc, 2) +
+            pow($hp1Delta / $sh, 2) +
+            $rt * $cpDelta / $sc * $hp1Delta / $sh,
+        );
     }
 
     /**
