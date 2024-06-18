@@ -1,5 +1,5 @@
 {
-    "name": "danmichaelo/coma",
+    "name": "biano/coma",
     "type": "library",
     "description": "Library to convert colors between the RGB, XYZ, and Lab colorspaces, and to calculate color distance metrics such as CIE76 and CIE94",
     "keywords": ["color", "color distance", "color conversion"],
@@ -9,24 +9,76 @@
         {
             "name": "Dan Michael O. Heggø",
             "email": "danmichaelo@gmail.com"
+        },
+        {
+            "name": "Biano team",
+            "homepage": "https://github.com/bianocz/elasticsearchdsl/graphs/contributors"
         }
     ],
     "require": {
-        "php": ">=8.1"
+        "php": "^8.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.2",
-        "squizlabs/php_codesniffer": "^3.7",
-        "phpstan/phpstan": "^1.10"
+        "biano/coding-standard": "^4.1",
+        "ergebnis/composer-normalize": "^2.43",
+        "phpstan/phpstan": "^1.11",
+        "phpunit/phpunit": "^11.0",
+        "roave/security-advisories": "dev-latest",
+        "shipmonk/composer-dependency-analyser": "^1.5",
+        "squizlabs/php_codesniffer": "^3.10"
     },
     "autoload": {
         "psr-4": {
-            "Danmichaelo\\Coma\\": "src/"
+            "Biano\\Coma\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Danmichaelo\\Coma\\": "tests/"
+            "Biano\\Coma\\": "tests/"
         }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "ergebnis/composer-normalize": true
+        }
+    },
+    "scripts": {
+        "test": [
+            "@style:phpcs",
+            "@test:test",
+            "@style:phpstan",
+            "@check:dependency"
+        ],
+        "test:test": [
+            "@phpunit"
+        ],
+        "style:phpcs": [
+            "@phpcs"
+        ],
+        "style:phpstan": [
+            "@phpstan"
+        ],
+        "style:check": [
+            "@style:phpcs",
+            "@style:phpstan"
+        ],
+        "style:fix": [
+            "@phpcbf src tests"
+        ],
+        "check:dependency": [
+            "@composer-dependency-analyser"
+        ],
+        "phpunit": "./vendor/bin/phpunit",
+        "phpcs": "./vendor/bin/phpcs -p -s --extensions=php --colors --report-width=140",
+        "phpstan": "./vendor/bin/phpstan analyse -c phpstan.neon",
+        "phpcbf": "./vendor/bin/phpcbf -p --extensions=php",
+        "composer-dependency-analyser": "./vendor/bin/composer-dependency-analyser"
     }
 }

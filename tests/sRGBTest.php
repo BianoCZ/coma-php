@@ -1,14 +1,15 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
-namespace Danmichaelo\Coma;
+namespace Biano\Coma;
 
-use Exception;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 class sRGBTest extends TestCase
 {
+
     public function testFromToHex(): void
     {
         $hex = '#234567';
@@ -27,7 +28,7 @@ class sRGBTest extends TestCase
 
     public function testInvalidHexColor1(): void
     {
-        self::expectException(Exception::class);
+        self::expectException(Throwable::class);
 
         $hex = '#2222';
         new sRGB($hex);
@@ -43,7 +44,7 @@ class sRGBTest extends TestCase
 
     public function testInvalidHexColor3(): void
     {
-        self::expectException(Exception::class);
+        self::expectException(Throwable::class);
 
         new sRGB(300, 300, 300);
     }
@@ -56,4 +57,5 @@ class sRGBTest extends TestCase
         self::assertSame('#78BD6E', $c->inverse()->toHex());
         self::assertSame($hex, $c->toHex()); // original object should not be altered!
     }
+
 }

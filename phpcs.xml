@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset>
+    <arg value="sp"/>
+    <file>src</file>
+    <file>tests</file>
+    <rule ref="BianoCodingStandard">
+        <exclude name="Squiz.Classes.ValidClassName.NotCamelCaps"/>
+        <exclude name="Squiz.NamingConventions.ValidVariableName.NotCamelCaps"/>
+    </rule>
+</ruleset>
