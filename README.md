@@ -6,7 +6,9 @@ CoMa – PHP Color Math Library
 [![Total Downloads](https://img.shields.io/packagist/dt/biano/coma.svg?style=flat-square&colorB=blue)](https://packagist.org/packages/biano/coma/stats)
 [![Software License](https://img.shields.io/github/license/bianocz/coma-php.svg?style=flat-square&colorB=blue)](./LICENSE)
 
-Php library to convert between [sRGB](//en.wikipedia.org/wiki/SRGB), [XYZ](//en.wikipedia.org/wiki/XYZ_color_space), and [Lab](//en.wikipedia.org/wiki/Lab_color_space) color spaces, and calculate various [color distance metrics](//en.wikipedia.org/wiki/Color_difference) (delta E). Currently CIE76 and CIE94 are implemented, but I plan to implement more.
+Php library to convert between [sRGB](//en.wikipedia.org/wiki/SRGB), [XYZ](//en.wikipedia.org/wiki/XYZ_color_space), and [Lab](//en.wikipedia.org/wiki/Lab_color_space) color spaces, and calculate various [color distance metrics](//en.wikipedia.org/wiki/Color_difference) (delta E). 
+
+Currently CIE76, CIE94 and CIEDE2000 are implemented.
 
 ```php
 use Biano\Coma\ColorDistance;
