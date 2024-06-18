@@ -3,7 +3,7 @@
     "type": "library",
     "description": "Library to convert colors between the RGB, XYZ, and Lab colorspaces, and to calculate color distance metrics such as CIE76 and CIE94",
     "keywords": ["color", "color distance", "color conversion"],
-    "homepage": "http://github.com/danmichaelo/php-coma",
+    "homepage": "http://github.com/bianocz/coma-php",
     "license": "MIT",
     "authors": [
         {
